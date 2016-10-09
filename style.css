@@ -3,12 +3,19 @@
   font-family: "Roboto Slab"; }
 
 .tooltip {
+  color: white;
   position: absolute;
   padding: 0 10px;
-  background: white;
+  background: black;
   opacity: 0; }
 
-.bar {
-  background-color: #619CFF; }
+.node {
+  fill: #CB5B5A;
+  stroke: #fff;
+  stroke-width: 2px; }
+
+.link {
+  stroke: #777;
+  stroke-width: 0.5px; }
 
 /*# sourceMappingURL=style.css.map */

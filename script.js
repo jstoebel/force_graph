@@ -20,91 +20,52 @@ d3.json("https://raw.githubusercontent.com/DealPete/forceDirected/master/countri
     .size([width + margin.left + margin.right,
       height + margin.top + margin.bottom])
     .nodes(nodes)
-    .links(links);
-    .linkDistance(width/2);
+    .links(links)
+    .linkDistance(width/4);
 
-  var link = svg.selectAll('.link')
+  var link = myChart.selectAll('.link')
     .data(links)
     .enter().append('line')
     .attr('class', 'link');
 
-  var node = svg.selectAll('.node')
-      .data(nodes)
-      .enter().append('circle')
-      .attr('class', 'node');
+  var node = myChart.selectAll("g.node")
+    .data(nodes, function(d) { return d.code})
 
-  //     .append('g')
-  //       .attr('transform', 'translate('+ margin.left +', '+ margin.top +')')
-  //       .selectAll('rect').data(monthlies)
-  //       .enter().append('rect')
-  //         .style('fill', function(point, i){
-  //           return colorScale(point.variance + baseTemp)
-  //         })
-  //         .attr('x', function(point, i){
-  //           return xScale(new Date(point.year,0))
-  //         })
-  //         .attr('y', function(point, i){
-  //           return yScale(point.month-1)
-  //         })
-  //         .attr('width', width/(endYear - startYear))
-  //         .attr('height', boxHeight)
-  //
-  //         .on('mouseenter', function(d) {
-  //             tooltip.transition()
-  //             .duration(100)
-  //             .style('opacity', .8)
-  //
-  //             var ttStr = `<div>${months[d.month-1]}, ${d.year}: ${d.variance}</div>`
-  //
-  //             tooltip.html(ttStr)
-  //                 .style('left', (d3.event.pageX - 35) + 'px')
-  //                 .style('top',  (d3.event.pageY - 30) + 'px')
-  //         })
-  //
-  //         .on('mouseout', function(d) {
-  //
-  //           console.log("Mouseout: "+`${months[d.month-1]}, ${d.year}`)
-  //
-  //           tooltip.transition()
-  //             .duration(200)
-  //             .style("opacity", 0);
-  //         })
-  //
-  // var vGuideScale = d3.scale.ordinal()
-  //         .domain(months)
-  //         .range(d3.range(0, height + boxHeight, height/12))
-  //
-  // var vAxis = d3.svg.axis()
-  //     .scale(vGuideScale)
-  //     .orient('left')
-  //     .ticks(12)
-  //
-  // var vGuide = d3.select('svg').append('g')
-  //     vAxis(vGuide)
-  //     vGuide.attr('transform', 'translate(' + margin.left + ', ' + (margin.top + (boxHeight/2)) + ')')
-  //     vGuide.selectAll('path')
-  //         .style('visibility', 'hidden')
-  //     vGuide.selectAll('line')
-  //         .style('visibility', 'hidden')
-  //
-  // var hGuideScale = d3.scale.linear()
-  //         .domain([startYear, endYear])
-  //         .range([0, width])
-  //
-  // var hAxis = d3.svg.axis()
-  //     .orient("bottom")
-  //     .scale(xScale)
-  //     .ticks(d3.time.years, 20);
-  //
-  // var hGuide = d3.select('svg').append('g')
-  //     hAxis(hGuide)
-  //     hGuide.attr('transform', 'translate(' + (margin.left) + ', ' + (height + margin.top) + ')')
-  //     hGuide.selectAll('path')
-  //         .style({ fill: 'none', stroke: "#000"})
-  //     hGuide.selectAll('line')
-  //         .style({ stroke: "#000"})
-  //
-  // var tooltip = d3.select('#chart').insert("div", ":first-child")
-  //   .classed('tooltip',  true)
+  var nodeInner = node.enter().append("svg:g")
+    .attr("class", "node")
+    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+
+  nodeInner.append("svg:circle")
+    .attr("r", 5)
+
+  nodeInner.append("img")
+    .attr("src", "flags.png")
+    // .attr("class", function(d){
+    //   return("flag flag-"+d.code)
+    // })
+    .attr("class", "flag flag-us")
+    .attr("alt", "")
+
+
+  force.on('end', function() {
+
+    // node.attr('cy', function(d){return d.y})
+    //   .attr('cx', function(d){return d.x})
+    //   .attr('r', 5)
+    node.attr('width', 100)
+      .attr('height', 100)
+      .attr('x', function(d){return d.x})
+      .attr('y', function(d){return d.y})
+      .attr('transform', function(d){
+        return ("transform", 'translate(' + d.x + ', ' + d.y + ')')
+      })
+
+    link.attr('x1', function(d) { return d.source.x; })
+      .attr('y1', function(d) { return d.source.y; })
+      .attr('x2', function(d) { return d.target.x; })
+      .attr('y2', function(d) { return d.target.y; });
+  })
+
+  force.start();
 
 })
